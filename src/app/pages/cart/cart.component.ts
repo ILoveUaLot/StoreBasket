@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { MatTableModule } from '@angular/material/table'
 import { MatIconModule } from '@angular/material/icon';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart',
@@ -41,16 +42,32 @@ export class CartComponent{
     'action'
   ]
 
-  constructor() {
+  constructor(private _cartService: CartService) {
     this.dataSource = this.cart.items;
-    console.log(this.dataSource);
+    this._cartService.cart.subscribe((_cart: Cart) => {
+      this.cart = _cart;
+      this.dataSource = this.cart.items;
+    })
+  }
+
+  onClearCar(): void {
+    this._cartService.clearCart()
   }
 
   getTotal(cartItems: Array<CartItem>): number
   {
-    return cartItems
-      .map((item) => item.price * item.quantity)
-      .reduce((prev, current) => prev + current, 0);
+    return this._cartService.getTotal(cartItems);
   }
 
+  onRemoveFromCart(item: CartItem): void {
+    this._cartService.removeFromCart(item);
+  }
+
+  onRemoveQuantity(item: CartItem): void {
+    this._cartService.removeQuantity(item);
+  }
+
+  onAddQuantity(item: CartItem): void {
+    this._cartService.addToCard(item);
+  }
 }

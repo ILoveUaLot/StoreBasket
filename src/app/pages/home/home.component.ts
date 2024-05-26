@@ -4,6 +4,8 @@ import { MatGridListModule} from '@angular/material/grid-list'
 import { ProductsHeaderComponent } from './components/products-header/products-header.component';
 import { FiltersComponent } from './components/filters/filters.component';
 import { ProductBoxComponent } from './components/product-box/product-box.component';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../models/product.model';
 
 const ROWS_HEIGHT: { [ id: number]: number } = { 1: 400, 3: 335, 4: 355 };
 
@@ -21,6 +23,21 @@ const ROWS_HEIGHT: { [ id: number]: number } = { 1: 400, 3: 335, 4: 355 };
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+  
+  constructor(private cartService: CartService){
+
+  }
+
+  onAddToCart(product: Product) : void {
+    this.cartService.addToCard({
+      product: product.image,
+      name: product.title,
+      price: product.price,
+      quantity: 1,
+      id: product.id
+    })
+  }
+
   cols = 3;
   rowHeight = ROWS_HEIGHT[this.cols];
   category: string | undefined;

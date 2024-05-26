@@ -1,38 +1,40 @@
 <div class="flex justify-between items-center bg-gray-800 w-full h-12 px-12">
     <a routerLink="home" class="text-white text-2xl font-bold font-serif">StoreBasket</a>
     <button mat-icon-button [mat-menu-trigger-for]="menu">
-        <mat-icon [matBadge]="1" matBadgeColor="warn" class="text-white">shopping_cart</mat-icon>
+        <mat-icon [matBadge]="itemsQuantity" 
+            [matBadgeHidden]="!itemsQuantity" 
+            matBadgeColor="warn" 
+            class="text-white">shopping_cart</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
         <div class="p-3 divide-y divide-solid">
             <!--display general count of items in cart-->
             <div class="pb-3 flex justify-between">
-                <span>1 Items</span>
+                <span>{{itemsQuantity}}</span>
                 <a routerLink="cart">View cart</a>
             </div> 
             <!--display each item in cart-->
-            <div class="py-3">
-                <div class="flex justify-between font-light mb-2">
-                    item1
-                    <span class="font-bold">{{ '150' | currency: 'RUB'}}</span>
+            @if(cart.items.length)
+            {
+                <div class="py-3">
+                    @for (item of cart.items; track $index) {
+                        <div class="flex justify-between font-light mb-2">
+                            {{item.name}} x {{item.quantity}}
+                            <span class="font-bold">{{ item.price | currency: 'RUB' }}</span>
+                        </div>
+                    }
                 </div>
-                <div class="flex justify-between font-light mb-2">
-                    item2
-                    <span class="font-bold">{{ '150' | currency: 'RUB'}}</span>
-                </div>
-                <div class="flex justify-between font-light mb-2">
-                    item3
-                    <span class="font-bold">{{ '150' | currency: 'RUB'}}</span>
-                </div>
-            </div>
+            }
             <!--Total-->
             <div class="flex justify-between py-3 font-light">
                 Total:
-                <span class="font-bold">{{ '450' | currency: 'RUB'}}</span>
+                <span class="font-bold">{{ getTotal(cart.items) | currency: 'RUB'}}</span>
             </div>
             <!--Cart control buttons-->
             <div class="pt-3 flex justify-between">
-                <button class="bg-rose-600 text-white rounded-full w-10 h-10">
+                <button 
+                    (click)="onClearCart()"
+                    class="bg-rose-600 text-white rounded-full w-10 h-10">
                     <mat-icon>remove_shopping_cart</mat-icon>
                 </button>
                 <button 
